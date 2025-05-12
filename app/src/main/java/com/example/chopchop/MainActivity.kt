@@ -12,6 +12,13 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import com.example.chopchop.ui.theme.ChopChopTheme
+import androidx.navigation.NavHostController
+import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.composable
+import androidx.navigation.compose.rememberNavController
+import com.example.chopchop.ui.LoginScreen
+import com.example.chopchop.ui.RegisterScreen
+import com.example.chopchop.ui.ListsScreen
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -19,11 +26,28 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
         setContent {
             ChopChopTheme {
+                val navController = rememberNavController()
                 Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
-                    Greeting(
-                        name = "Android",
+                    NavHost(
+                        navController = navController,
+                        startDestination = "login",
                         modifier = Modifier.padding(innerPadding)
-                    )
+                    ) {
+                        composable("login") {
+                            LoginScreen(
+                                onLogin = { navController.navigate("lists") },
+                                onRegister = { navController.navigate("register") }
+                            )
+                        }
+                        composable("register") {
+                            RegisterScreen(
+                                onRegister = { navController.navigate("lists") }
+                            )
+                        }
+                        composable("lists") {
+                            ListsScreen()
+                        }
+                    }
                 }
             }
         }
