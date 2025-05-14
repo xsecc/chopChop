@@ -20,17 +20,17 @@ import androidx.compose.ui.text.input.PasswordVisualTransformation
 import com.example.chopchop.R
 
 @Composable
-fun RegisterScreen(onRegister: () -> Unit = {}) {
+fun RegisterScreen(appViewModel: AppViewModel, onRegister: () -> Unit = {}) {
     var email by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
     var confirmPassword by remember { mutableStateOf("") }
+    val registerError = appViewModel.registerError.value
 
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .background(Color(0xFF222222)),
-        horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.Center
+            .background(Color.White),
+        horizontalAlignment = Alignment.CenterHorizontally
     ) {
         Spacer(modifier = Modifier.height(16.dp))
         Image(
@@ -56,43 +56,39 @@ fun RegisterScreen(onRegister: () -> Unit = {}) {
         OutlinedTextField(
             value = email,
             onValueChange = { email = it },
-            label = { Text("Correo") },
-            singleLine = true,
-            modifier = Modifier
-                .fillMaxWidth(0.8f)
-                .background(Color.White, RoundedCornerShape(8.dp))
+            label = { Text("Usuario") },
+            modifier = Modifier.fillMaxWidth().padding(horizontal = 32.dp)
         )
-        Spacer(modifier = Modifier.height(12.dp))
         OutlinedTextField(
             value = password,
             onValueChange = { password = it },
             label = { Text("Contraseña") },
-            singleLine = true,
-            visualTransformation = PasswordVisualTransformation(),
-            modifier = Modifier
-                .fillMaxWidth(0.8f)
-                .background(Color.White, RoundedCornerShape(8.dp))
+            modifier = Modifier.fillMaxWidth().padding(horizontal = 32.dp),
+            visualTransformation = PasswordVisualTransformation()
         )
-        Spacer(modifier = Modifier.height(12.dp))
         OutlinedTextField(
             value = confirmPassword,
             onValueChange = { confirmPassword = it },
-            label = { Text("Confirmar contraseña") },
-            singleLine = true,
-            visualTransformation = PasswordVisualTransformation(),
-            modifier = Modifier
-                .fillMaxWidth(0.8f)
-                .background(Color.White, RoundedCornerShape(8.dp))
+            label = { Text("Confirmar Contraseña") },
+            modifier = Modifier.fillMaxWidth().padding(horizontal = 32.dp),
+            visualTransformation = PasswordVisualTransformation()
         )
-        Spacer(modifier = Modifier.height(24.dp))
+        if (registerError != null) {
+            Text(registerError, color = Color.Red, modifier = Modifier.padding(8.dp))
+        }
         Button(
-            onClick = onRegister,
-            modifier = Modifier
-                .fillMaxWidth(0.8f)
-                .height(48.dp),
-            colors = ButtonDefaults.buttonColors(containerColor = Color(0xFFFFA726))
+            onClick = {
+                if (password == confirmPassword && password.isNotEmpty()) {
+                    if (appViewModel.register(email, password)) {
+                        onRegister()
+                    }
+                } else {
+                    appViewModel.registerError.value = "Las contraseñas no coinciden"
+                }
+            },
+            modifier = Modifier.fillMaxWidth().padding(32.dp)
         ) {
-            Text("Registrarse", color = Color.White, fontWeight = FontWeight.Bold)
+            Text("Registrarse")
         }
     }
 } 

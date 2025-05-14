@@ -13,13 +13,13 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.res.painterResource
 import com.example.chopchop.R
 import androidx.navigation.NavController
 
 @Composable
-fun ListsScreen(navController: NavController) {
+fun ListsScreen(navController: NavController, appViewModel: AppViewModel) {
+    Text("¡Pantalla de Listas!", color = Color.Black)
     Column(
         modifier = Modifier
             .fillMaxSize()

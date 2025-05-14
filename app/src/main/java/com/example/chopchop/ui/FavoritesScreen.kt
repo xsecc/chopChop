@@ -1,6 +1,7 @@
 package com.example.chopchop.ui
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.*
@@ -20,30 +21,17 @@ import androidx.navigation.NavController
 import com.example.chopchop.ui.BottomNavBar
 
 @Composable
-fun FavoritesScreen(navController: NavController) {
-    var favoriteLists by remember {
-        mutableStateOf(
-            listOf(
-                // Ejemplo de listas favoritas
-                FavoriteListItem("Navidad", false),
-                FavoriteListItem("Lista familiar", true)
-            )
-        )
-    }
-
+fun FavoritesScreen(navController: NavController, appViewModel: AppViewModel) {
+    val favoriteLists = appViewModel.lists.filter { it.favorite }
     Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .background(Color.White)
+        modifier = Modifier.fillMaxSize().background(Color.White)
     ) {
         Text(
             text = "LISTAS FAVORITAS",
             fontSize = 26.sp,
             fontWeight = FontWeight.Bold,
             color = Color.Black,
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(top = 24.dp, bottom = 16.dp),
+            modifier = Modifier.fillMaxWidth().padding(top = 24.dp, bottom = 16.dp),
             textAlign = TextAlign.Center
         )
         if (favoriteLists.isEmpty()) {
@@ -73,7 +61,8 @@ fun FavoritesScreen(navController: NavController) {
                     Card(
                         modifier = Modifier
                             .fillMaxWidth()
-                            .padding(horizontal = 16.dp, vertical = 8.dp),
+                            .padding(horizontal = 16.dp, vertical = 8.dp)
+                            .clickable { navController.navigate("productos/${list.id}") },
                         elevation = 4.dp
                     ) {
                         Row(
@@ -83,16 +72,14 @@ fun FavoritesScreen(navController: NavController) {
                             Box(
                                 modifier = Modifier
                                     .size(24.dp)
-                                    .background(
-                                        if (list.active) Color(0xFF4CAF50) else Color(0xFFFFA726),
-                                        shape = CircleShape
-                                    ),
+                                    .background(Color(0xFF4CAF50), shape = CircleShape)
+                                    .clickable { appViewModel.toggleFavorite(list.id) },
                                 contentAlignment = Alignment.Center
                             ) {
                                 Icon(
                                     imageVector = Icons.Default.Favorite,
                                     contentDescription = null,
-                                    tint = if (list.active) Color.White else Color.White.copy(alpha = 0.7f),
+                                    tint = Color.White,
                                     modifier = Modifier.size(16.dp)
                                 )
                             }
@@ -105,8 +92,8 @@ fun FavoritesScreen(navController: NavController) {
                                     fontSize = 18.sp
                                 )
                                 Text(
-                                    text = if (list.active) "Activa" else "Inactiva",
-                                    color = if (list.active) Color(0xFF4CAF50) else Color.Gray,
+                                    text = "Favorita",
+                                    color = Color(0xFF4CAF50),
                                     fontSize = 14.sp
                                 )
                             }

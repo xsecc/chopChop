@@ -24,18 +24,19 @@ import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import com.example.chopchop.R
+import androidx.compose.material3.TextButton
 
 @Composable
-fun LoginScreen(onLogin: () -> Unit = {}, onRegister: () -> Unit = {}) {
+fun LoginScreen(appViewModel: AppViewModel, onLogin: () -> Unit = {}, onRegister: () -> Unit = {}) {
     var email by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
+    val loginError = appViewModel.loginError.value
 
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .background(Color(0xFF222222)),
-        horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.Center
+            .background(Color.White),
+        horizontalAlignment = Alignment.CenterHorizontally
     ) {
         // Imagen de login (puedes cambiar el recurso por uno propio)
         Spacer(modifier = Modifier.height(16.dp))
@@ -62,42 +63,31 @@ fun LoginScreen(onLogin: () -> Unit = {}, onRegister: () -> Unit = {}) {
         OutlinedTextField(
             value = email,
             onValueChange = { email = it },
-            label = { Text("Correo") },
-            singleLine = true,
-            modifier = Modifier
-                .fillMaxWidth(0.8f)
-                .background(Color.White, RoundedCornerShape(8.dp))
+            label = { Text("Usuario") },
+            modifier = Modifier.fillMaxWidth().padding(horizontal = 32.dp)
         )
-        Spacer(modifier = Modifier.height(12.dp))
         OutlinedTextField(
             value = password,
             onValueChange = { password = it },
             label = { Text("Contraseña") },
-            singleLine = true,
-            visualTransformation = PasswordVisualTransformation(),
-            modifier = Modifier
-                .fillMaxWidth(0.8f)
-                .background(Color.White, RoundedCornerShape(8.dp))
+            modifier = Modifier.fillMaxWidth().padding(horizontal = 32.dp),
+            visualTransformation = PasswordVisualTransformation()
         )
-        Spacer(modifier = Modifier.height(24.dp))
-        Button(
-            onClick = onLogin,
-            modifier = Modifier
-                .fillMaxWidth(0.8f)
-                .height(48.dp),
-            colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF4CAF50))
-        ) {
-            Text("Iniciar Sesion", color = Color.White, fontWeight = FontWeight.Bold)
+        if (loginError != null) {
+            Text(loginError, color = Color.Red, modifier = Modifier.padding(8.dp))
         }
-        Spacer(modifier = Modifier.height(8.dp))
         Button(
-            onClick = onRegister,
-            modifier = Modifier
-                .fillMaxWidth(0.8f)
-                .height(48.dp),
-            colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF43A047))
+            onClick = {
+                if (appViewModel.login(email, password)) {
+                    onLogin()
+                }
+            },
+            modifier = Modifier.fillMaxWidth().padding(32.dp)
         ) {
-            Text("Crear Cuenta", color = Color.White, fontWeight = FontWeight.Bold)
+            Text("Iniciar sesión")
+        }
+        TextButton(onClick = onRegister) {
+            Text("¿No tienes cuenta? Regístrate")
         }
     }
 } 
