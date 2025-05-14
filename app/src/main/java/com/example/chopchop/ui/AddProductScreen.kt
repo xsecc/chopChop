@@ -19,6 +19,14 @@ import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
+import androidx.compose.material.AlertDialog
+import androidx.compose.material.OutlinedTextField
+import androidx.compose.material.Text
+import androidx.compose.material.Button
+import androidx.compose.material.TextFieldDefaults
+import androidx.compose.material.ButtonDefaults
+import androidx.compose.material.IconButton
+import androidx.compose.material.Icon
 
 @Composable
 fun AddProductScreen(navController: NavController) {
@@ -165,10 +173,11 @@ fun AddProductScreen(navController: NavController) {
                     .padding(top = 48.dp),
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
-                Image(
-                    painter = painterResource(id = R.drawable.ic_empty_products),
+                Icon(
+                    imageVector = Icons.Default.Check,
                     contentDescription = "Sin productos",
-                    modifier = Modifier.size(120.dp)
+                    modifier = Modifier.size(120.dp),
+                    tint = Color.LightGray
                 )
                 Spacer(modifier = Modifier.height(16.dp))
                 Text(

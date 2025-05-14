@@ -19,6 +19,8 @@ import androidx.navigation.compose.rememberNavController
 import com.example.chopchop.ui.LoginScreen
 import com.example.chopchop.ui.RegisterScreen
 import com.example.chopchop.ui.ListsScreen
+import com.example.chopchop.ui.FavoritesScreen
+import com.example.chopchop.ui.SettingsScreen
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -30,22 +32,22 @@ class MainActivity : ComponentActivity() {
                 Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
                     NavHost(
                         navController = navController,
-                        startDestination = "login",
+                        startDestination = "listas",
                         modifier = Modifier.padding(innerPadding)
                     ) {
+                        composable("listas") { ListsScreen(navController) }
+                        composable("favoritos") { FavoritesScreen(navController) }
+                        composable("ajustes") { SettingsScreen(navController) }
                         composable("login") {
                             LoginScreen(
-                                onLogin = { navController.navigate("lists") },
+                                onLogin = { navController.navigate("listas") },
                                 onRegister = { navController.navigate("register") }
                             )
                         }
                         composable("register") {
                             RegisterScreen(
-                                onRegister = { navController.navigate("lists") }
+                                onRegister = { navController.navigate("listas") }
                             )
-                        }
-                        composable("lists") {
-                            ListsScreen()
                         }
                     }
                 }

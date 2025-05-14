@@ -19,6 +19,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
+import com.example.chopchop.ui.BottomNavBar
 
 @Composable
 fun SettingsScreen(navController: NavController) {
@@ -70,38 +71,5 @@ fun SettingOption(icon: androidx.compose.ui.graphics.vector.ImageVector, text: S
         Icon(icon, contentDescription = null, tint = Color(0xFF4CAF50), modifier = Modifier.size(24.dp))
         Spacer(modifier = Modifier.width(16.dp))
         Text(text, color = Color.Black, fontSize = 18.sp)
-    }
-}
-
-@Composable
-fun BottomNavBar(selected: Int, navController: NavController) {
-    BottomNavigation(
-        backgroundColor = Color.White,
-        elevation = 8.dp
-    ) {
-        BottomNavigationItem(
-            icon = { Icon(Icons.Default.List, contentDescription = "Listas") },
-            label = { Text("Listas") },
-            selected = selected == 0,
-            onClick = { /* Navegar a Listas */ },
-            selectedContentColor = Color(0xFF4CAF50),
-            unselectedContentColor = Color.Gray
-        )
-        BottomNavigationItem(
-            icon = { Icon(Icons.Default.Favorite, contentDescription = "Favoritos") },
-            label = { Text("Favoritos") },
-            selected = selected == 1,
-            onClick = { /* Navegar a Favoritos */ },
-            selectedContentColor = Color(0xFF4CAF50),
-            unselectedContentColor = Color.Gray
-        )
-        BottomNavigationItem(
-            icon = { Icon(Icons.Default.Settings, contentDescription = "Ajustes") },
-            label = { Text("Ajustes") },
-            selected = selected == 2,
-            onClick = { /* Navegar a Ajustes */ },
-            selectedContentColor = Color(0xFF4CAF50),
-            unselectedContentColor = Color.Gray
-        )
     }
 } 

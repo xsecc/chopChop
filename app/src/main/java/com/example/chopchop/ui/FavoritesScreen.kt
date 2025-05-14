@@ -15,6 +15,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
+import com.example.chopchop.ui.BottomNavBar
 
 @Composable
 fun FavoritesScreen(navController: NavController) {
@@ -116,37 +117,4 @@ fun FavoritesScreen(navController: NavController) {
     }
 }
 
-data class FavoriteListItem(val name: String, val active: Boolean)
-
-@Composable
-fun BottomNavBar(selected: Int, navController: NavController) {
-    BottomNavigation(
-        backgroundColor = Color.White,
-        elevation = 8.dp
-    ) {
-        BottomNavigationItem(
-            icon = { Icon(Icons.Default.List, contentDescription = "Listas") },
-            label = { Text("Listas") },
-            selected = selected == 0,
-            onClick = { /* Navegar a Listas */ },
-            selectedContentColor = Color(0xFF4CAF50),
-            unselectedContentColor = Color.Gray
-        )
-        BottomNavigationItem(
-            icon = { Icon(Icons.Default.Favorite, contentDescription = "Favoritos") },
-            label = { Text("Favoritos") },
-            selected = selected == 1,
-            onClick = { /* Navegar a Favoritos */ },
-            selectedContentColor = Color(0xFF4CAF50),
-            unselectedContentColor = Color.Gray
-        )
-        BottomNavigationItem(
-            icon = { Icon(Icons.Default.Settings, contentDescription = "Ajustes") },
-            label = { Text("Ajustes") },
-            selected = selected == 2,
-            onClick = { /* Navegar a Ajustes */ },
-            selectedContentColor = Color(0xFF4CAF50),
-            unselectedContentColor = Color.Gray
-        )
-    }
-} 
+data class FavoriteListItem(val name: String, val active: Boolean) 

@@ -16,9 +16,10 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.res.painterResource
 import com.example.chopchop.R
+import androidx.navigation.NavController
 
 @Composable
-fun ListsScreen(onAddList: () -> Unit = {}) {
+fun ListsScreen(navController: NavController) {
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -62,7 +63,7 @@ fun ListsScreen(onAddList: () -> Unit = {}) {
             contentAlignment = Alignment.BottomEnd
         ) {
             FloatingActionButton(
-                onClick = onAddList,
+                onClick = {},
                 containerColor = Color(0xFF4CAF50),
                 contentColor = Color.White,
                 shape = CircleShape,
@@ -72,48 +73,6 @@ fun ListsScreen(onAddList: () -> Unit = {}) {
             }
         }
         // Barra de navegación inferior
-        BottomNavigationBar()
-    }
-}
-
-@Composable
-fun BottomNavigationBar() {
-    NavigationBar(
-        containerColor = Color.White,
-        tonalElevation = 8.dp
-    ) {
-        NavigationBarItem(
-            selected = true,
-            onClick = {},
-            icon = {
-                Icon(
-                    painter = painterResource(id = R.drawable.ic_list),
-                    contentDescription = "Listas"
-                )
-            },
-            label = { Text("Listas") }
-        )
-        NavigationBarItem(
-            selected = false,
-            onClick = {},
-            icon = {
-                Icon(
-                    painter = painterResource(id = R.drawable.ic_favorite),
-                    contentDescription = "Favoritos"
-                )
-            },
-            label = { Text("Favoritos") }
-        )
-        NavigationBarItem(
-            selected = false,
-            onClick = {},
-            icon = {
-                Icon(
-                    painter = painterResource(id = R.drawable.ic_settings),
-                    contentDescription = "Ajustes"
-                )
-            },
-            label = { Text("Ajustes") }
-        )
+        BottomNavBar(selected = 0, navController = navController)
     }
 } 
