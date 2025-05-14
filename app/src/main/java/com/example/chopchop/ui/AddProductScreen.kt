@@ -5,6 +5,9 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.*
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Close
+import androidx.compose.material.icons.filled.Check
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -12,6 +15,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
@@ -31,6 +35,82 @@ fun AddProductScreen(navController: NavController) {
                 ProductItem("Mostaza", 1),
                 ProductItem("Aceite", 1)
             )
+        )
+    }
+    var editingProduct by remember { mutableStateOf<ProductItem?>(null) }
+    var editName by remember { mutableStateOf(TextFieldValue("")) }
+    var editQuantity by remember { mutableStateOf(TextFieldValue("1")) }
+    var showDialog by remember { mutableStateOf(false) }
+
+    fun openEditDialog(product: ProductItem) {
+        editingProduct = product
+        editName = TextFieldValue(product.name)
+        editQuantity = TextFieldValue(product.quantity.toString())
+        showDialog = true
+    }
+
+    if (showDialog && editingProduct != null) {
+        AlertDialog(
+            onDismissRequest = { showDialog = false },
+            title = {
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.SpaceBetween,
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Text("Información", modifier = Modifier.weight(1f), textAlign = TextAlign.Center)
+                    Text(
+                        "Hecho",
+                        color = Color(0xFF4CAF50),
+                        modifier = Modifier
+                            .clickable {
+                                val newName = editName.text.trim()
+                                val newQuantity = editQuantity.text.toIntOrNull() ?: 1
+                                if (newName.isNotEmpty()) {
+                                    products = products.map {
+                                        if (it == editingProduct) it.copy(name = newName, quantity = newQuantity) else it
+                                    }
+                                    showDialog = false
+                                }
+                            }
+                    )
+                }
+            },
+            text = {
+                Column(modifier = Modifier.fillMaxWidth()) {
+                    OutlinedTextField(
+                        value = editName,
+                        onValueChange = { editName = it },
+                        label = { Text("Nombre") },
+                        modifier = Modifier.fillMaxWidth()
+                    )
+                    Spacer(modifier = Modifier.height(8.dp))
+                    OutlinedTextField(
+                        value = editQuantity,
+                        onValueChange = {
+                            if (it.text.all { c -> c.isDigit() } && it.text.isNotEmpty()) editQuantity = it
+                        },
+                        label = { Text("Cantidad") },
+                        modifier = Modifier.fillMaxWidth()
+                    )
+                }
+            },
+            confirmButton = {},
+            dismissButton = {
+                Button(
+                    onClick = {
+                        products = products.filter { it != editingProduct }
+                        showDialog = false
+                    },
+                    colors = ButtonDefaults.buttonColors(backgroundColor = Color.Red),
+                    modifier = Modifier.fillMaxWidth()
+                ) {
+                    Text("Eliminar", color = Color.White)
+                }
+            },
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(8.dp)
         )
     }
 
@@ -117,6 +197,14 @@ fun AddProductScreen(navController: NavController) {
                         },
                         onDelete = {
                             products = products.filter { it.name != product.name }
+                        },
+                        onEdit = {
+                            openEditDialog(product)
+                        },
+                        onCheck = {
+                            products = products.map {
+                                if (it.name == product.name) it.copy(checked = !it.checked) else it
+                            }
                         }
                     )
                 }
@@ -136,34 +224,55 @@ fun AddProductScreen(navController: NavController) {
     }
 }
 
-data class ProductItem(val name: String, val quantity: Int)
+data class ProductItem(val name: String, val quantity: Int, val checked: Boolean = false)
 
 @Composable
 fun ProductRow(
     product: ProductItem,
     onAdd: () -> Unit,
     onRemove: () -> Unit,
-    onDelete: () -> Unit
+    onDelete: () -> Unit,
+    onEdit: () -> Unit,
+    onCheck: () -> Unit
 ) {
     Row(
         verticalAlignment = Alignment.CenterVertically,
         modifier = Modifier
             .fillMaxWidth()
             .padding(vertical = 8.dp)
+            .clickable { onEdit() }
     ) {
-        // Botón +
+        // Botón círculo para check
         Box(
             modifier = Modifier
-                .size(32.dp)
-                .background(Color(0xFF4CAF50), shape = CircleShape)
-                .clickable { onAdd() },
+                .size(24.dp)
+                .background(
+                    if (product.checked) Color(0xFF4CAF50) else Color(0xFFFFA726),
+                    shape = CircleShape
+                )
+                .clickable {
+                    onCheck()
+                },
             contentAlignment = Alignment.Center
         ) {
-            Text("+", color = Color.White, fontSize = 20.sp)
+            if (product.checked) {
+                Icon(
+                    imageVector = Icons.Default.Check,
+                    contentDescription = "Checked",
+                    tint = Color.White,
+                    modifier = Modifier.size(16.dp)
+                )
+            }
         }
         Spacer(modifier = Modifier.width(8.dp))
         // Nombre del producto
-        Text(product.name, color = Color.White, fontSize = 18.sp, modifier = Modifier.weight(1f))
+        Text(
+            product.name,
+            color = Color.White,
+            fontSize = 18.sp,
+            modifier = Modifier.weight(1f),
+            textDecoration = if (product.checked) TextDecoration.LineThrough else null
+        )
         // Cantidad
         if (product.quantity > 1) {
             Box(
